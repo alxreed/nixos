@@ -6,12 +6,10 @@
 
 {
   imports =
-    [ # Include the results of the hardware scan.
-      /etc/nixos/hardware-configuration.nix
-    ];
+    (import ../modules/editors) ++          # Native doom emacs instead of nix-community flake
+    (import ../shell);
 
-  # Enable nix command
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
 
   # Bootloader.
   boot.loader.grub.enable = true;
@@ -82,87 +80,44 @@
     #media-session.enable = true;
   };
 
+  fonts.fonts = with pkgs; [                # Fonts
+    carlito                                 # NixOS
+    vegur                                   # NixOS
+    source-code-pro
+    jetbrains-mono
+    font-awesome                            # Icons
+    corefonts                               # MS
+    (nerdfonts.override {                   # Nerdfont Icons override
+      fonts = [
+        "FiraCode"
+      ];
+    })
+  ];    
+
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.alex = {
     isNormalUser = true;
-    description = "alex";
-    extraGroups = [ "networkmanager" "wheel" "docker"];
+    extraGroups = [ "networkmanager" "wheel"];
     shell = pkgs.zsh;
-    packages = with pkgs; [
-      firefox
-    ];
   };
-
-  # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages = with pkgs; [
-  
-    # Version Control
-    git
-    gh
- 
-    # Editors
-    vim
-    vscode
-
-    # Utils
-    wget
-    docker
-
-    # Shell
-    zsh
-    oh-my-zsh
-    zsh-completions
-    zsh-autosuggestions
-    zsh-syntax-highlighting
-    thefuck
-   
-    # Terminal
-    alacritty
-
-    # Gnome
-    gnome-extension-manager
-    gnome.gnome-tweaks
-    gnomeExtensions.clipboard-indicator
-    gnomeExtensions.caffeine
-    gnomeExtensions.appindicator
-
-    # Chat
-    slack
-    discord
-
-    # SQL
-    dbeaver
-    mongodb-compass
-
-    # Dev Tools
-    postman
-
-    # Theme
-    zafiro-icons
-    
-  ];
-
-  programs.zsh = {
-    enable = true;
-    enableAutosuggestions = true;
-    enableSyntaxHighlighting = true;
-    enableCompletion = true;
-    
-    oh-my-zsh = {
-      enable = true;
-      plugins = [
-        "git"
-        "thefuck"
-      ];
-      theme = "robbyrussell";
+  environment = {
+    variables = {
+      TERMINAL = "alacritty";
+      EDITOR = "nvim";
+      VISUAL = "nvim";
     };
+
+    systemPackages = with pkgs; [
+      vim
+      htop
+      wget
+    ];
   };
 
   # List services that you want to enable:
@@ -170,15 +125,6 @@
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
   services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
-
-  # Docker
-  virtualisation.docker = {
-    enable = true;
-    rootless = {
-      enable = true;
-      setSocketVariable = true;
-    };
-  };
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
@@ -192,6 +138,17 @@
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "22.11"; # Did you read the comment?
+  
+  # Enable nix command
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+    # Allow unfree packages
+  nixpkgs.config.allowUnfree = true;
 
+  system = {                                # NixOS settings
+    autoUpgrade = {                         # Allow auto update (not useful in flakes)
+      enable = true;
+      channel = "https://nixos.org/channels/nixos-unstable";
+    };
+    stateVersion = "22.11";
+  };
 }
