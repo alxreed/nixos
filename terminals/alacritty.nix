@@ -14,12 +14,12 @@
           italic.family = "FiraCode Nerd Font";
           size = 11;
         };
-        shell.program = "/bin/zsh";
+        shell.program = "${pkgs.zsh}/bin/zsh";
         colors = {
           # Default colors
           primary = {
             background = "#303446";
-            foreground = "C6D0F5";
+            foreground = "#C6D0F5";
             dim_foreground = "#C6D0F5";
             bright_foreground = "#C6D0F5";
           };

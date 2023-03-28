@@ -8,7 +8,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager }:     
+  outputs = inputs @ { self, nixpkgs, home-manager, ... }:     
     let                                                                     # Variables that can be used in the config files.
       user = "alex";
       location = "$HOME/.setup";

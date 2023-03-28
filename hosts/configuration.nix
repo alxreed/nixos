@@ -2,29 +2,9 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ config, pkgs, lib, inputs, user, ... }:
 
 {
-  imports =
-    (import ../modules/editors) ++          # Native doom emacs instead of nix-community flake
-    (import ../shell);
-
-
-
-  # Bootloader.
-  boot.loader.grub.enable = true;
-  boot.loader.grub.device = "/dev/vda";
-  boot.loader.grub.useOSProber = true;
-
-  networking.hostName = "nixos"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-
-  # Enable networking
-  networking.networkmanager.enable = true;
 
   # Set your time zone.
   time.timeZone = "Europe/Paris";
@@ -44,18 +24,6 @@
     LC_TIME = "fr_FR.UTF-8";
   };
 
-  # Enable the X11 windowing system.
-  services.xserver.enable = true;
-
-  # Enable the GNOME Desktop Environment.
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
-
-  # Configure keymap in X11
-  services.xserver = {
-    layout = "fr";
-    xkbVariant = "nodeadkeys";
-  };
 
   # Configure console keymap
   console.keyMap = "fr";
@@ -81,12 +49,7 @@
   };
 
   fonts.fonts = with pkgs; [                # Fonts
-    carlito                                 # NixOS
-    vegur                                   # NixOS
-    source-code-pro
-    jetbrains-mono
-    font-awesome                            # Icons
-    corefonts                               # MS
+    font-awesome                            # Icons                              # MS
     (nerdfonts.override {                   # Nerdfont Icons override
       fonts = [
         "FiraCode"
@@ -98,7 +61,7 @@
   # services.xserver.libinput.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.alex = {
+  users.users.${user} = {
     isNormalUser = true;
     extraGroups = [ "networkmanager" "wheel"];
     shell = pkgs.zsh;
@@ -109,8 +72,8 @@
   environment = {
     variables = {
       TERMINAL = "alacritty";
-      EDITOR = "nvim";
-      VISUAL = "nvim";
+      EDITOR = "vim";
+      VISUAL = "vim";
     };
 
     systemPackages = with pkgs; [
@@ -124,8 +87,7 @@
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
-  services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
-
+  
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
@@ -140,8 +102,12 @@
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   
   # Enable nix command
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-    # Allow unfree packages
+  nix = {
+    settings.experimental-features = [ "nix-command" "flakes" ];
+    package = pkgs.nixVersions.unstable;
+    registry.nixpkgs.flake = inputs.nixpkgs;
+  };
+      # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
   system = {                                # NixOS settings
