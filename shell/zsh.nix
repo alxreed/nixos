@@ -17,41 +17,38 @@
         theme = "robbyrussell";
       };
 
-      shellAliases = ''
-        start='sudo systemctl start'
-        stop='sudo systemctl stop'
-        status='systemctl status'
-        restart='sudo systemctl restart'
+      shellAliases = {
+        start = "sudo systemctl start";
+        stop = "sudo systemctl stop";
+        status = "systemctl status";
+        restart = "sudo systemctl restart";
 
         # Get External IP / local IPs
-        ip="curl ipinfo.io/ip"
-        ips="ifconfig -a | perl -nle'/(\d+\.\d+\.\d+\.\d+)/ && print $1'"
-        speedtest="wget -O /dev/null http://speedtest.wdc01.softlayer.com/downloads/test10.zip"
-
-        # Quickly serve the current directory as HTTP
-        serve='ruby -run -e httpd . -p 8000'  # Or python -m SimpleHTTPServer :)
+        ip = "curl ipinfo.io/ip";
+        ips = "ifconfig -a | perl -nle'/(\d+\.\d+\.\d+\.\d+)/ && print $1'";
+        speedtest = "wget -O /dev/null http://speedtest.wdc01.softlayer.com/downloads/test10.zip";
 
         # lock screen
-        lock="gnome-screensaver-command -l"
+        lock = "gnome-screensaver-command -l";
 
         # app running
-        apps="ps -A"
+        apps = "ps -A";
 
         # Pushing/pulling to origin remote
-        gpo="git push origin"
-        glo="git pull origin"
+        gpo = "git push origin";
+        glo = "git pull origin";
 
         # Pushing/pulling to origin remote, master branch
-        glom="git pull origin master"
-        glod="git pull origin develop"
+        glom = "git pull origin master";
+        glod = "git pull origin develop";
 
         # Commit amend
-        gcamno="git commit --amend --no-edit"
-        gcam="git commit --amend"
+        gcamno = "git commit --amend --no-edit";
+        gcam = "git commit --amend";
 
         # connect to ubastion
-        bastion="ssh ubastion.adeo.com -l 20013176"
-      '';
+        bastion = "ssh ubastion.adeo.com -l 20013176";
+      };
     };
 
     starship.enable = true;

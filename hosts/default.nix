@@ -18,7 +18,7 @@ in
     specialArgs = {
       inherit inputs user location;
       host = {
-        hostName = "vm";
+        hostName = "nixos";
         mainMonitor = "Virtual-1";
       };
     };
@@ -32,7 +32,7 @@ in
         home-manager.extraSpecialArgs = {
           inherit user;
           host = {
-            hostName = "vm";
+            hostName = "nixos";
             mainMonitor = "Virtual-1";
           };
         };
